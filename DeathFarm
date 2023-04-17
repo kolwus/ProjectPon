@@ -1,0 +1,30 @@
+local IsGame = (game.PlaceId == 6839171747)
+local IsLobby = (game.PlaceId == 6516141723 or game.PlaceId == 12308344607)
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
+
+
+local IsAutofarm_ON = true 
+local WaitTime = 15
+if IsAutofarm_ON then
+    if not game:IsLoaded() then game.Loaded:Wait()  end
+    task.wait(.1)
+    if IsGame then
+        repeat task.wait(.1) until Players.LocalPlayer.PlayerGui:FindFirstChild("MainUI")
+        repeat task.wait(.1) until Players.LocalPlayer.PlayerGui.MainUI:FindFirstChild("DeathPanelDead")
+
+        Players.LocalPlayer.PlayerGui.MainUI.DeathPanelDead:GetPropertyChangedSignal("Visible"):Connect(function()
+            if Players.LocalPlayer.PlayerGui.MainUI.DeathPanelDead.Visible == true and Players.LocalPlayer.PlayerGui.MainUI.DeathPanelDead.PlayAgain.Visible == true then
+                game.GuiService.GuiNavigationEnabled = true
+                task.wait()
+                ReplicatedStorage.EntityInfo.PlayAgain:FireServer()
+            end
+        end)
+
+        while task.wait() do 
+            task.wait(WaitTime)
+            game.Players.LocalPlayer.Character.Humanoid.Health = 0 
+        end
+    end
+end
